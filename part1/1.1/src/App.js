@@ -1,52 +1,31 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-const Header= (props) => {
-  return(
-      <div>
-        <h1>{props.course}</h1>
-      </div>
-  )
-
-}
-
-const Content= (props) => {
-  return(
-      <div>
-        <p>
-          {props.part} {props.exercises}
-        </p>
-      </div>
-  )
-}
-
-const Total= (props) => {
-  return(
-      <div>
-        <p>
-          Number of exercises {props.num}
-        </p>
-      </div>
-  )
-}
 
 const App = () => {
-  const course = 'Half Stack application development'
-  const part1 = 'Fundamentals of React'
-  const exercises1 = 10
-  const part2 = 'Using props to pass data'
-  const exercises2 = 7
-  const part3 = 'State of a component'
-  const exercises3 = 14
-
-  return (
-      <div>
-          <Header course={course} />
-          <Content part={part1} exercises={exercises1} />
-          <Content part={part2} exercises={exercises2} />
-          <Content part={part3} exercises={exercises3} />
-          <Total num={exercises1+exercises2+exercises3} />
-      </div>
-  )
+    // save clicks of each button to own state
+    const [good, setGood] = useState(0)
+    const [neutral, setNeutral] = useState(0)
+    const [bad, setBad] = useState(0)
+    const addGood =()=> {
+       setGood(good+1)
+    }
+    const addBad= () =>setBad(bad+1)
+    const addNeutral=()=>setNeutral(neutral+1)
+    return (
+        <div>
+            <h1>give feedback</h1>
+            <button onClick={addGood}>Good</button>
+            <button onClick={addNeutral}>Neutral</button>
+            <button onClick={addBad}>Bad</button>
+            <h1>statistics</h1>
+            <p>Good:{good}</p>
+            <p>Neutral:{neutral}</p>
+            <p>Bad:{bad}</p>
+            <p>All:{good+bad+neutral}</p>
+            <p>average:{(good-bad)/(good+bad+neutral)}</p>
+            <p>positive:{(good/(good+bad+neutral))*100}%</p>
+        </div>
+    )
 }
 
 export default App
