@@ -13,7 +13,7 @@ const PersonFrom=(props)=>{
                 value={props.newPhone}
                 onChange={props.handlePhoneChange} />
             <br />
-            <button type="submit">lisää</button>
+            <button type="submit">add</button>
         </form>
     )
 }
