@@ -1,6 +1,6 @@
 import React from "react";
 
-const Country = ({name,capital,population,languages,flagUrl}) => {
+const Country = ({name,capital,population,languages,flagUrl,country,show}) => {
     if(population!=undefined) {
         return (
             <div>
@@ -17,11 +17,14 @@ const Country = ({name,capital,population,languages,flagUrl}) => {
             </div>
         )
     }
-    return(
-        <div>
+    return (
+        <li key={name}>
             {name}
-        </div>
-    )
-}
+            <button value={country.name} onClick={show}>
+                Show
+            </button>
+        </li>
+    );
+};
 
 export default Country;

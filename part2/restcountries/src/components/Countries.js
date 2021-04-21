@@ -1,8 +1,8 @@
 import React, {useState} from "react";
 import Country from "./Country";
 
-const Countries = ({countries, newSearch}) => {
-    const [showCountry,setShowContry] = useState();
+const Countries = ({countries, newSearch,showCountry,setShowCountry}) => {
+
 
     const show = event => {
         console.log(event.target.value);
@@ -10,13 +10,26 @@ const Countries = ({countries, newSearch}) => {
             country.name.includes(event.target.value)
         );
         console.log("cont: ", cont);
-        setShowContry(cont[0]);
+        setShowCountry(cont[0]);
     };
 
 
     const entries = countries.filter(country => country.name.toUpperCase().includes(newSearch.toUpperCase()))
     if (entries.length >= 10) {
         return <p>Too many matches, specify another filter</p>
+    }
+
+    if (showCountry !== undefined) {
+        return (
+            <Country
+                key={showCountry.name}
+                name={showCountry.name}
+                capital={showCountry.capital}
+                population={showCountry.population}
+                languages={showCountry.languages}
+                flagUrl={showCountry.flag}
+            />
+        );
     }
 
     if(entries.length===1){
@@ -50,12 +63,10 @@ const Countries = ({countries, newSearch}) => {
                     <Country
                         key={country.name}
                         name={country.name}
-                        //capital={country.capital}
-                        //population={country.population}
-                        //languages={country.languages}
-                        //flagUrl={country.flag}
+                        country={country}
+                        show={show}
                     />
-            ))}
+                ))}
         </ul>
     );
 }
