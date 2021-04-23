@@ -10,16 +10,17 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newPhone, setNewPhone] = useState('')
     const [filter, setFilter] = useState('')
+
     const addPerson = event => {
         event.preventDefault();
         const personObject = {
             name: newName,
             number: newPhone,
-            id: Math.floor(Math.random() * 101)
+            id: Math.floor(Math.random() * 101)//随机id
         };
 
         if (
-            persons.filter(person => person.name === personObject.name).length > 0
+            persons.filter(person => person.name === personObject.name).length > 0//存在重复
         ) {
             if (
                 window.confirm(
@@ -28,7 +29,7 @@ const App = () => {
                     } is already in phonebook`
                 )
             ) {
-                const previousPerson = persons.find(n => n.name === newName);
+                const previousPerson = persons.find(n => n.name === newName);//更新同名为最新信息
                 personDB
                     .update(previousPerson.id, { ...previousPerson, number: newPhone })
                     .then(updatedPerson => {
