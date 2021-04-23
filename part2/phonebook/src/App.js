@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react'
+import React, {useState, useEffect} from 'react'
 import Filter from "./components/Filter";
 import PersonFrom from "./components/PersonFrom";
 import Persons from "./components/Persons";
@@ -31,7 +31,7 @@ const App = () => {
             ) {
                 const previousPerson = persons.find(n => n.name === newName);//更新同名为最新信息
                 personDB
-                    .update(previousPerson.id, { ...previousPerson, number: newPhone })
+                    .update(previousPerson.id, {...previousPerson, number: newPhone})
                     .then(updatedPerson => {
                         setPersons(
                             persons.map(n => (n.name === newName ? updatedPerson : n))
@@ -73,6 +73,28 @@ const App = () => {
         setFilter(event.target.value)
     };
 
+    const handleDeletePerson = (name, id) => {
+        return () => {
+            if (window.confirm(`Are you sure delete ${name}`)) {
+                personDB.deletePerson(id).then(
+                    () => {
+                        setPersons(persons.filter(n => n.id !== id));
+                        setNewName("")
+                        setNewPhone("")
+                    }
+                )
+                    .catch(error => {
+                        setPersons(persons.filter(n => n.name !== name));
+
+                    });
+                setTimeout(() => {
+                    //setErrorMessage(null);
+                }, 3000);
+            }
+
+        }
+    }
+
     useEffect(() => {
         axios.get('http://localhost:3001/persons').then(response => {
             setPersons(response.data);
@@ -82,7 +104,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-           <Filter filter={filter} handleFilterChange={handleFilterChange}/>
+            <Filter filter={filter} handleFilterChange={handleFilterChange}/>
             <h2>Add New</h2>
             <PersonFrom
                 newName={newName}
@@ -92,7 +114,7 @@ const App = () => {
                 addPerson={addPerson}
             />
             <h2>Numbers</h2>
-            <Persons persons={persons} filter={filter}/>
+            <Persons persons={persons} filter={filter} handleDeletePerson={handleDeletePerson}/>
 
             ...
         </div>
