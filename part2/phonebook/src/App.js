@@ -3,26 +3,62 @@ import Filter from "./components/Filter";
 import PersonFrom from "./components/PersonFrom";
 import Persons from "./components/Persons";
 import axios from "axios";
+import personDB from "./services/personDB";
 
 const App = () => {
     const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
     const [newPhone, setNewPhone] = useState('')
     const [filter, setFilter] = useState('')
-    const addPerson = (event) => {
-        event.preventDefault()
+    const addPerson = event => {
+        event.preventDefault();
         const personObject = {
             name: newName,
-            phone: newPhone
-        }
-        if (persons.filter(person => person.name === personObject.name).length > 0) {
-            window.confirm(`${personObject.name} is already added to phonebook`)
-            setNewName('')
+            number: newPhone,
+            id: Math.floor(Math.random() * 101)
+        };
+
+        if (
+            persons.filter(person => person.name === personObject.name).length > 0
+        ) {
+            if (
+                window.confirm(
+                    `${
+                        personObject.name
+                    } is already in phonebook`
+                )
+            ) {
+                const previousPerson = persons.find(n => n.name === newName);
+                personDB
+                    .update(previousPerson.id, { ...previousPerson, number: newPhone })
+                    .then(updatedPerson => {
+                        setPersons(
+                            persons.map(n => (n.name === newName ? updatedPerson : n))
+                        );
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                setPersons(persons.concat(personObject));
+                setNewName("");
+                setNewPhone("");
+                setTimeout(() => {
+                    //setErrorMessage(null);
+                }, 3000);
+            }
         } else {
-            setPersons(persons.concat(personObject))
-            setNewName('')
+            personDB
+                .create(personObject)
+                .then(newPerson => {
+                    setPersons(persons.concat(newPerson));
+                    setNewName("");
+                    setNewPhone("");
+                })
+            setTimeout(() => {
+                //setErrorMessage(null);
+            }, 3000);
         }
-    }
+    };
 
     const handlePersonChange = (event) => {
         setNewName(event.target.value)
