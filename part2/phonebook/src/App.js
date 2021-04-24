@@ -11,7 +11,8 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newPhone, setNewPhone] = useState('')
     const [filter, setFilter] = useState('')
-    const [errorMessage,setErrorMessage]=useState(null)
+    const [errorMessage, setErrorMessage] = useState(null)
+
     const addPerson = event => {
         event.preventDefault();
         const personObject = {
@@ -43,7 +44,7 @@ const App = () => {
                         setErrorMessage(`update faild `)
                     });
                 setPersons(persons.concat(personObject));
-                setErrorMessage(`change ${Object.name}`)
+                setErrorMessage(`change ${personObject.name}`)
                 setNewName("");
                 setNewPhone("");
                 setTimeout(() => {
@@ -113,7 +114,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
-            <Notification message={errorMessage} />
+            <Notification message={errorMessage}/>
             <Filter filter={filter} handleFilterChange={handleFilterChange}/>
             <h2>Add New</h2>
             <PersonFrom
