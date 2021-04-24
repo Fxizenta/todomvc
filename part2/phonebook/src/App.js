@@ -4,13 +4,14 @@ import PersonFrom from "./components/PersonFrom";
 import Persons from "./components/Persons";
 import axios from "axios";
 import personDB from "./services/personDB";
+import Notification from "./components/Notification";
 
 const App = () => {
     const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
     const [newPhone, setNewPhone] = useState('')
     const [filter, setFilter] = useState('')
-
+    const [errorMessage,setErrorMessage]=useState(null)
     const addPerson = event => {
         event.preventDefault();
         const personObject = {
@@ -39,12 +40,14 @@ const App = () => {
                     })
                     .catch(error => {
                         console.log(error);
+                        setErrorMessage(`update faild `)
                     });
                 setPersons(persons.concat(personObject));
+                setErrorMessage(`change ${Object.name}`)
                 setNewName("");
                 setNewPhone("");
                 setTimeout(() => {
-                    //setErrorMessage(null);
+                    setErrorMessage(null);
                 }, 3000);
             }
         } else {
@@ -52,11 +55,16 @@ const App = () => {
                 .create(personObject)
                 .then(newPerson => {
                     setPersons(persons.concat(newPerson));
+                    setErrorMessage(`add ${personObject.name}`)
                     setNewName("");
                     setNewPhone("");
                 })
+                .catch(error => {
+                    setErrorMessage(`${error.response.data.error}`);
+                    console.log(error.response.data);
+                });
             setTimeout(() => {
-                //setErrorMessage(null);
+                setErrorMessage(null);
             }, 3000);
         }
     };
@@ -79,16 +87,17 @@ const App = () => {
                 personDB.deletePerson(id).then(
                     () => {
                         setPersons(persons.filter(n => n.id !== id));
+                        setErrorMessage(`delete error ${name}`)
                         setNewName("")
                         setNewPhone("")
                     }
                 )
                     .catch(error => {
                         setPersons(persons.filter(n => n.name !== name));
-
+                        setErrorMessage(`don\'t have ${name} on the phonebook`)
                     });
                 setTimeout(() => {
-                    //setErrorMessage(null);
+                    setErrorMessage(null);
                 }, 3000);
             }
 
@@ -104,6 +113,7 @@ const App = () => {
     return (
         <div>
             <h2>Phonebook</h2>
+            <Notification message={errorMessage} />
             <Filter filter={filter} handleFilterChange={handleFilterChange}/>
             <h2>Add New</h2>
             <PersonFrom
