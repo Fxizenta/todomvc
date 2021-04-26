@@ -1,7 +1,21 @@
 const express =require('express')
+var morgan=require("morgan");
 const app=express()
 
 app.use(express.json());
+app.use(morgan("tiny"));
+
+const requestLogger = (request, response, next) => {
+    console.log("Method:", request.method);
+    console.log("Path:  ", request.path);
+    console.log("Body:  ", request.body);
+    console.log("---");
+    next();
+};
+
+app.use(requestLogger);
+morgan.token("body", req => JSON.stringify(req.body))
+
 let persons=[
     {
         "name": "Arto Hellas",
@@ -80,7 +94,7 @@ app.post('/api/persons',(request,response)=>{
             error: "name must be unique"
         })
     }
-    console.log(body)
+    //console.log(body)
     const person = {
         name: body.name||"text",
         number: body.number||123,
