@@ -9,7 +9,7 @@ const password = process.argv[2]
 
 
 const url =
-    `mongodb+srv://fxizenta1:${password}@cluster0.p35od.mongodb.net/person?retryWrites=true&w=majority`
+    ``
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
 
