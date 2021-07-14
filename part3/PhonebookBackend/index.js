@@ -2,6 +2,7 @@ const express =require('express')
 var morgan=require("morgan");
 const app=express()
 const cors = require('cors')
+const Person=require('./models/Person')
 
 app.use(cors())
 app.use(express.json());
@@ -47,7 +48,9 @@ let persons=[
 ]
 
 app.get('/api/persons',(request,response)=>{
-    response.json(persons);
+    Person.find({}).then(notes => {
+        response.json(notes)
+    })
 })
 
 app.get('/info',(request,response)=>{
@@ -57,13 +60,14 @@ app.get('/info',(request,response)=>{
 })
 
 app.get('/api/persons/:id',(request,response)=>{
-    const id=Number(request.params.id);
-    const person=persons.find(person=>person.id===id)
-    if(person){
-        response.json(person);
-    }else{
-        response.status(404).end()
-    }
+    Person.findById(request.params.id).then(note => {
+        if(person){
+            response.json(person);
+        }else{
+            response.status(404).end()
+        }
+    })
+
 
 })
 
@@ -97,13 +101,19 @@ app.post('/api/persons',(request,response)=>{
         })
     }
     //console.log(body)
-    const person = {
-        name: body.name||"text",
-        number: body.number||123,
-        id: Math.floor(Math.random()*10000)
-    };
-    persons=persons.concat(person);
-    response.json(person);
+
+    if (body.content === undefined) {
+        return response.status(400).json({ error: 'content missing' })
+    }
+
+    const person = new Person({
+        name: body.name,
+        phone: body.phone,
+    })
+
+    person.save().then(savedNote => {
+        response.json(savedNote)
+    })
 })
 
 const PORT=3001;
